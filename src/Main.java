@@ -16,15 +16,39 @@ public class Main {
         // Scans the user input.
         Scanner scanner = new Scanner(System.in);
 
-        do {
-            System.out.println("""
-                    Available actions (select word or letter):
-                    (F)orward
-                    (B)ackward
-                    (L)ist Places
-                    (M)enu
-                    (Q)uit""");
+        // Stores whether user is printing place name in the forward direction.
+        boolean forward = false;
 
+        // Stores the menu.
+        String menu = """
+                Available actions (select word or letter):
+                (F)orward
+                (B)ackward
+                (L)ist Places
+                (M)enu
+                (Q)uit""";
+        System.out.println(menu);
+
+        do {
+            // Checks if there is no previous place.
+            if (!iterator.hasPrevious()) {
+                // Going to next place.
+                System.out.println("Originating: " + iterator.next());
+
+                // User has to move to forward direction.
+                forward = true;
+            }
+
+            // Checks if there is no next place.
+            if (!iterator.hasNext()) {
+                // Going to previous place.
+                System.out.println("Final: " + iterator.previous());
+
+                // User has to move to backward direction.
+                forward = false;
+            }
+
+            System.out.print("Enter value: ");
             // Scans the user input.
             String input = scanner.nextLine();
 
@@ -36,21 +60,31 @@ public class Main {
                     System.out.println(place);
                 }
             } else if (input.equalsIgnoreCase("F")) {
+                // Checks if user was coming from backwards.
+                if (!forward) {
+                    forward = true;
+                    if (iterator.hasNext()) {
+                        iterator.next();
+                    }
+                }
                 if (iterator.hasNext()) {
-                    Place place = iterator.next();
-                    System.out.println(place);
-                } else {
-                    System.out.println("Iterator is at the end of the list.");
+                    System.out.println("User wants to move forward.");
+                    System.out.println(iterator.next());
                 }
             } else if (input.equalsIgnoreCase("B")) {
-                if (iterator.hasPrevious()) {
-                    Place place = iterator.previous();
-                    System.out.println(place);
-                } else {
-                    System.out.println("Iterator is at the beginning of the list.");
+                // Checks if user was coming from forward.
+                if(forward) {
+                    forward = false;
+                    if(iterator.hasPrevious()) {
+                        iterator.previous();
+                    }
                 }
-            } else if (!input.equalsIgnoreCase("M")) {
-                System.out.println("Enter only the available actions.");
+                if (iterator.hasPrevious()) {
+                    System.out.println("User wants to move backward.");
+                    System.out.println(iterator.previous());
+                }
+            } else if (input.equalsIgnoreCase("M")) {
+                System.out.println(menu);
             }
 
             // Divider
@@ -90,6 +124,7 @@ public class Main {
             // Checks if duplicate place is entered.
             for (Place p : places) {
                 if (p.getTown().equalsIgnoreCase(place.getTown())) {
+                    System.out.println(place.getTown() + " is already present.");
                     placeAlreadyPresent = true;
                     placeAdded = true;
                     break;

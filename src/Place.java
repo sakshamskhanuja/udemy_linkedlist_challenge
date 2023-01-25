@@ -28,6 +28,6 @@ public class Place {
 
     @Override
     public String toString() {
-        return "Place: " + town + ", Distance: " + distance;
+        return town + " -> (" + distance + ")";
     }
 }
